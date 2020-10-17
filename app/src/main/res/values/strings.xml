@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Socket Stream</string>
+    <string name="transfer_history">Transfer History</string>
+    <string name="send_button_fab">SEND</string>
+    <string name="receive_butto_fab">RECEIVE</string>
+    <string name="sendPhotoPageName">Photos</string>
+    <string name="sendVideosPageName">Videos</string>
+    <string name="sendAppsPageName">Apps</string>
+    <string name="sendMediaPageName">Songs</string>
+    <string name="permissionBeforeTransfer">Permissions Before Transfer</string>
+    <string name="gpsLocation">Turn On GPS Location</string>
+    <string name="bluetooth">Turn On Bluetooth</string>
+    <string name="Hotspot">Turn Off Hotspot</string>
+    <string name="wifi">Turn On Wifi</string>
+</resources>
