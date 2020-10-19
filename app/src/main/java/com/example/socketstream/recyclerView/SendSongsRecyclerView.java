@@ -27,11 +27,15 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
     Cursor mMediaStore=null;
     Activity mActivity;
 
+    //create constructor
     public SendSongsRecyclerView(Activity mActivity){
         this.mActivity=mActivity;
     }
 
 
+    /*
+    inflate layout
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,24 +46,31 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         return new SendSongsRecyclerView.ViewHolder(view);
     }
 
+    /*
+    assign song name to text view , songlength
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int songNameIndex= mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE);
+        mMediaStore.moveToPosition(position);
+        int songNameIndex= mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
         int songLengthIndex=mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
+        String songName=mMediaStore.getString(songNameIndex);
         holder.getSongNameTextView().setText(mMediaStore.getString(songNameIndex));
         holder.getSongLengthTextView().setText(String.valueOf(mMediaStore.getInt(songLengthIndex)));
-        Bitmap bitmap=getBitmapFromMediaStore(position);
-        if(bitmap!=null){
-            holder.getSongImageView().setImageBitmap(bitmap);
-        }
 
     }
 
+    /*
+    return number of songs
+     */
     @Override
     public int getItemCount() {
-        return 0;
+        return mMediaStore!=null?mMediaStore.getCount():0;
     }
 
+    /*
+    function to intiliaze all type of view in our layout by calling fndviewbyid()
+     */
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView songNameTextView,songLengthTextView;
         ImageView songImageView;
@@ -86,6 +97,8 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         }
     }
 
+
+    //function to check cursor change or not
     private Cursor swapCursor(Cursor cursor) {
         if (mMediaStore == cursor) {
             return null;
@@ -98,6 +111,9 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         return oldCursor;
     }
 
+    /*
+    if cursor chenge the we have to clode the old cursor and give new value to cursor
+     */
     public void changeCursor(Cursor cursor) {
         Cursor oldCursor = swapCursor(cursor);
         if (oldCursor != null) {
@@ -105,11 +121,5 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         }
     }
 
-    private Bitmap getBitmapFromMediaStore(int position) {
-        int idIndex = mMediaStore.getColumnIndex(MediaStore.Audio.Media._ID);
-        Bitmap bitmap=null;
 
-
-        return bitmap;
-    }
 }
