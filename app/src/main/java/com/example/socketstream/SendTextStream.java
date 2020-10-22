@@ -18,6 +18,8 @@ public class SendTextStream extends AppCompatActivity {
     //which take input from the users
     EditText inputText;
 
+    String inputMessage=null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +28,7 @@ public class SendTextStream extends AppCompatActivity {
         //initiliaze the EditText instance
         inputText=(EditText)findViewById(R.id.text_stream_input);
 
-        //get message from the input text
-        final String inputMessage=inputText.getText().toString().trim();
+
 
         sendButton=(Button)findViewById(R.id.send_button_text_stream);
         /*
@@ -37,15 +38,17 @@ public class SendTextStream extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent=new Intent(SendTextStream.this,PermissionRequiredTransfer.class);
+
+                //get message from the input text
+                inputMessage=inputText.getText().toString().trim();
                 /*
                 redirect to next activity if input text is not empty
                  */
-                if(inputMessage!=null) {
+                if(!inputMessage.equals("".trim())) {
+                    Intent intent=new Intent(SendTextStream.this,PermissionRequiredTransfer.class);
                     intent.setData(Uri.parse("3"));
                     intent.putExtra("message",inputMessage);
                     startActivity(intent);
-
                 }else{
                     Toast.makeText(SendTextStream.this, "Please enter text", Toast.LENGTH_SHORT).show();
                 }
