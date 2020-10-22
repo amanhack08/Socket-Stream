@@ -21,10 +21,12 @@ public class SendFragmentPageAdapter extends FragmentPagerAdapter {
             case 0:
                 return new SendAppsStorage();
             case 1:
-                return new SendVideosGalley();
+                return new SendFilesStorage();
             case 2:
-                return new SendMediaStorage();
+                return new SendVideosGalley();
             case 3:
+                return new SendMediaStorage();
+            case 4:
                 return new SendPhotosGallery();
             default:
                 return null;
@@ -39,10 +41,12 @@ public class SendFragmentPageAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Apps";
             case 1:
-                return "Videos";
+                return "Files";
             case 2:
-                return "Songs";
+                return "Videos";
             case 3:
+                return "Songs";
+            case 4:
                 return "Photos";
             default:
                 return null;
@@ -51,6 +55,6 @@ public class SendFragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 }
