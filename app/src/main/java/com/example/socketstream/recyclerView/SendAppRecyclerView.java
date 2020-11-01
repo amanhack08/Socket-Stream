@@ -54,6 +54,17 @@ public class SendAppRecyclerView extends RecyclerView.Adapter<SendAppRecyclerVie
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
+    @Override
     public int getItemCount() {
         return installedApps.size();
     }
