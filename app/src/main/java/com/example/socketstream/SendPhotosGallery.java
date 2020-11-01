@@ -2,6 +2,7 @@ package com.example.socketstream;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,16 +42,30 @@ public class SendPhotosGallery extends Fragment implements LoaderManager.LoaderC
     RecyclerView recyclerView;
     SendImageRecyclerView imageAdapter;
     View v;
+    Button sendButton;
+    ArrayList<Uri> sendArrayListImages;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.send_photos_gallery, container, false);
 
         cr = getActivity().getContentResolver();
         imageUri = new ArrayList<Bitmap>();
 
+        sendButton=(Button)v.findViewById(R.id.send_button_image_fragment_view);
 
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendArrayListImages=SendImageRecyclerView.getArrayListUri();
+                Intent intent=new Intent( getActivity(),PermissionRequiredTransfer.class);
+                intent.setData(Uri.parse("9"));
+                intent.putExtra("mylist",sendArrayListImages);
+                startActivity(intent);
+            }
+        });
         getLoaderManager().initLoader(0, null, this);
         recyclerView=(RecyclerView)v.findViewById(R.id.send_image_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(),3));
