@@ -3,6 +3,7 @@
     package="com.example.socketstream">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -15,11 +16,23 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/socketstreamicon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/socketstreamicon"
+
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:enabled="true"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
         <activity android:name=".SendTextStream"
             android:label="SEND"/>
         <activity android:name=".DiscoverPeers"
@@ -29,8 +42,16 @@
             android:label="@string/transfer_history"/>
         <activity android:name=".SendFilesViewPager"
             android:label="@string/send_button_fab"/>
+        <activity android:name=".sendfiles.SendImages"
+            android:label="Peers"/>
         <activity android:name=".PermissionRequiredTransfer"
             />
+        <activity android:name=".transferhistory.ReceiveTextMessages"
+            android:label="@string/textMessageLable"/>
+        <activity android:name=".transferhistory.ReceiveImages"
+            android:label="@string/receive_images_activity_label"></activity>
+
+        <service android:enabled="true"  android:name="com.example.socketstream.sendfiles.ImageTransferService" />
 
         <activity android:name=".SplashScreenActivity"
             >
@@ -41,5 +62,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>
