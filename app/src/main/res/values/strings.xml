@@ -12,4 +12,8 @@
     <string name="bluetooth">Turn On Bluetooth</string>
     <string name="Hotspot">Turn Off Hotspot</string>
     <string name="wifi">Turn On Wifi</string>
+    <string name="textMessageLable">Text</string>
+    <string name="textHistory">Text Message</string>
+    <string name="receiveImagesButton">Receive Images</string>
+    <string name="receive_images_activity_label">Images</string>
 </resources>
