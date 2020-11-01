@@ -54,6 +54,17 @@ public class SendVideoRecyclerView extends RecyclerView.Adapter<SendVideoRecycle
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
+    @Override
     public int getItemCount() {
         return mMediaStoreCursor==null? 0 : mMediaStoreCursor.getCount();
     }
