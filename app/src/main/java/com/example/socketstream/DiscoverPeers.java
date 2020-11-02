@@ -3,6 +3,8 @@ package com.example.socketstream;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -22,6 +24,10 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.socketstream.database.TransferHistoryContract;
+import com.example.socketstream.database.TransferHistoryDbHelper;
+import com.example.socketstream.transferhistory.ReceiveTextMessages;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -282,7 +288,10 @@ public class DiscoverPeers extends AppCompatActivity {
                 case MESSAGE_READ:
                     byte[] readByte=(byte[])message.obj;
                     String tempMsg=new String(readByte,0,message.arg1);
-                    Toast.makeText(DiscoverPeers.this, tempMsg, Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(DiscoverPeers.this, ReceiveTextMessages.class);
+                    intent.setData(Uri.parse("0"));
+                    intent.putExtra("message",tempMsg);
+                    startActivity(intent);
                     break;
             }
             return true;
