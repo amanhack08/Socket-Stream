@@ -1,34 +1,37 @@
 package com.example.socketstream.recyclerView;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.media.ThumbnailUtils;
+
+import android.net.Uri;
 import android.provider.MediaStore;
-import android.text.PrecomputedText;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.socketstream.R;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
 
 public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecyclerView.ViewHolder> {
 
     Cursor mMediaStore=null;
     Activity mActivity;
+    static ArrayList<Uri> audioUri;
 
     //create constructor
     public SendSongsRecyclerView(Activity mActivity){
+        audioUri=new ArrayList<>();
         this.mActivity=mActivity;
     }
 
@@ -46,19 +49,56 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         return new SendSongsRecyclerView.ViewHolder(view);
     }
 
+
     /*
     assign song name to text view , songlength
      */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         mMediaStore.moveToPosition(position);
+        final CheckBox checkBox1=holder.getCheckBox();
+        final Uri uri= ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,mMediaStore.getInt(mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)));
         int songNameIndex= mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
         int songLengthIndex=mMediaStore.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
         String songName=mMediaStore.getString(songNameIndex);
         holder.getSongNameTextView().setText(mMediaStore.getString(songNameIndex));
         holder.getSongLengthTextView().setText(String.valueOf(mMediaStore.getInt(songLengthIndex)));
+        holder.getSongImageView().setImageResource(R.drawable.songimageicon);
+
+        checkBox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TextView text=(TextView)view.findViewById(R.id.send_text_image_fragment_view);
+                if(!checkBox1.isChecked()) {
+                    checkBox1.setChecked(false);
+                    for (int i = 0; i < audioUri.size(); i++) {
+                        if (audioUri.get(i).toString().equals(uri.toString())) {
+                            audioUri.remove(i);
+                            break;
+                        }
+                    }
+                    Toast.makeText(mActivity, "" + audioUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    checkBox1.setChecked(true);
+                    audioUri.add(uri);
+                    Toast.makeText(mActivity, ""+audioUri.size(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 
     /*
     return number of songs
@@ -95,6 +135,8 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         public TextView getSongLengthTextView(){
             return songLengthTextView;
         }
+
+        public CheckBox getCheckBox(){return checkBox;}
     }
 
 
