@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".TransferFileHistoryActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/receive_text_message_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/textHistory"
+        android:textSize="18sp"
+        android:layout_margin="15dp"
+        android:textColor="@android:color/black"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black"/>
+    <TextView
+        android:id="@+id/receive_images_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/receive_images_activity_label"
+        android:textSize="18sp"
+        android:layout_margin="15dp"
+        android:textColor="@android:color/black"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/black"/>
+
+</LinearLayout>
