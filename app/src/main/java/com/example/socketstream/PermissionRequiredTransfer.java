@@ -1,10 +1,13 @@
 package com.example.socketstream;
 
 import android.Manifest;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
@@ -17,24 +20,35 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.socketstream.sendfiles.SendImages;
+
+import java.util.ArrayList;
+
 public class PermissionRequiredTransfer extends AppCompatActivity {
-    Button wifiButton,locationButton,hotspotButton,bluetoothButton,sendOrReceiveButton;
+    Button wifiButton,locationButton,hotspotButton,bluetoothButton,sendOrReceiveButton,receiveImagesButton;
     WifiP2pManager wifiP2pManager;
     WifiP2pManager.Channel mChannel;
     WifiManager wifiManager;
     SocketStreamBroadcastReceiver socketStreamBroadcastReceiver;
     IntentFilter intentFilter;
+    String textMessage=null;
+    String data=null;
+    Intent intent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.permission_required_transfer);
-        Intent intent=getIntent();
+        intent=getIntent();
+        data=intent.getData().toString();
 
         getSupportActionBar().hide();
         initializeAllButtons();
-        if(intent.getData()!=null){
+        if(data.equals("0")){
             sendOrReceiveButton.setText("Receive");
+        }
+        else if(data.equals("3")){
+            textMessage=intent.getStringExtra("message");
         }
         socketStreamBroadcastReceiver=new SocketStreamBroadcastReceiver(  PermissionRequiredTransfer.this,mChannel,wifiP2pManager);
         intentFilter=new IntentFilter();
@@ -66,6 +80,7 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
         wifiManager=(WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiP2pManager=(WifiP2pManager)getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel=wifiP2pManager.initialize(this,getMainLooper(),null);
+        receiveImagesButton=(Button)findViewById(R.id.send_images_discover_peers);
     }
     public void runTimePermission(){
         String[] PERMISSIONS = {
@@ -107,6 +122,13 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String[] permissionsRequired = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+
+                if(ActivityCompat.checkSelfPermission(getApplicationContext(), permissionsRequired[0]) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(PermissionRequiredTransfer.this,permissionsRequired,100);
+                }
+                else if((ActivityCompat.checkSelfPermission(getApplicationContext(), permissionsRequired[0]) == PackageManager.PERMISSION_GRANTED)){
+                }
                 Intent intent1 = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent1);
                 LocationManager locationManager = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -138,8 +160,33 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
-                startActivity(intent);
+
+                if(data.equals("3")){
+                    Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
+                    intent.putExtra("message",textMessage);
+                    intent.setData(Uri.parse("3"));
+                    startActivity(intent);
+                }
+                else if(data.equals("9")){
+                    Intent intent1=new Intent(PermissionRequiredTransfer.this, SendImages.class);
+                    ArrayList<Uri> myList = (ArrayList<Uri>) intent.getSerializableExtra("mylist");
+                    intent1.putExtra("mylist",myList);
+                    intent1.setData(Uri.parse("0"));
+                    startActivity(intent1);
+                }
+                else{
+                    Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
+                    startActivity(intent);
+                }
+
+            }
+        });
+
+        receiveImagesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1=new Intent(PermissionRequiredTransfer.this,SendImages.class);
+                startActivity(intent1);
             }
         });
     }
