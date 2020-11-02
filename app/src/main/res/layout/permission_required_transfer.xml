@@ -193,5 +193,17 @@
         android:layout_margin="10dp"
         android:layout_gravity="end"/>
 
+    <Button
+        android:id="@+id/send_images_discover_peers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/receiveImagesButton"
+        android:background="@color/colorEveryWhereInApp"
+        android:layout_margin="10dp"
+        android:layout_below="@id/discover_peers_button"
+        android:layout_gravity="end"/>
+
+
+
 </LinearLayout>
 </ScrollView>
