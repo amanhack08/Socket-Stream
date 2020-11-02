@@ -9,5 +9,14 @@
         android:id="@+id/send_image_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/send_button_image_fragment_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorEveryWhereInApp"
+        android:text="@string/send_button_fab"/>
 
 </RelativeLayout>
