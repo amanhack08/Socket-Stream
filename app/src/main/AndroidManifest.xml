@@ -4,15 +4,17 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:required="true" android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:required="true" android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <uses-permission android:required="true" android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:required="true" android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:required="true" android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.wifi.direct" android:required="true"/>
 
     <application
         android:allowBackup="true"
@@ -23,6 +25,7 @@
         android:supportsRtl="true"
 
         android:theme="@style/AppTheme">
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -33,6 +36,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <service
+            android:name=".connect.FileTransferService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <activity android:name=".SendTextStream"
             android:label="SEND"/>
         <activity android:name=".DiscoverPeers"
@@ -41,17 +49,19 @@
         <activity android:name=".TransferFileHistoryActivity"
             android:label="@string/transfer_history"/>
         <activity android:name=".SendFilesViewPager"
-            android:label="@string/send_button_fab"/>
+            android:label="@string/send_button_fab"
+            android:hardwareAccelerated="true" />
         <activity android:name=".sendfiles.SendImages"
             android:label="Peers"/>
         <activity android:name=".PermissionRequiredTransfer"
             />
         <activity android:name=".transferhistory.ReceiveTextMessages"
             android:label="@string/textMessageLable"/>
+        <activity android:name=".connect.DevicesActivity" />
         <activity android:name=".transferhistory.ReceiveImages"
             android:label="@string/receive_images_activity_label"></activity>
 
-        <service android:enabled="true"  android:name="com.example.socketstream.sendfiles.ImageTransferService" />
+
 
         <activity android:name=".SplashScreenActivity"
             >
