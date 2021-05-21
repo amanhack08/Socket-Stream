@@ -3,6 +3,7 @@ package com.example.socketstream.recyclerView;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import android.net.Uri;
@@ -20,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.socketstream.R;
+import com.example.socketstream.SendFilesViewPager;
+import com.example.socketstream.connect.Helper;
 
 import java.util.ArrayList;
 
@@ -27,12 +30,19 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
 
     Cursor mMediaStore=null;
     Activity mActivity;
-    static ArrayList<Uri> audioUri;
-
+    static ArrayList<Uri> audioUri,checkedAudioUri;
+    SharedPreferences sharedPreferences;
     //create constructor
     public SendSongsRecyclerView(Activity mActivity){
         audioUri=new ArrayList<>();
         this.mActivity=mActivity;
+        sharedPreferences=mActivity.getSharedPreferences(SendFilesViewPager.SELECT_ITEMS,Context.MODE_PRIVATE);
+        audioUri=SendFilesViewPager.getArrayList(SendFilesViewPager.MUSIC,sharedPreferences);
+        if(audioUri==null)
+            audioUri=new ArrayList<>();
+        checkedAudioUri=SendFilesViewPager.getArrayList(SendFilesViewPager.MUSIC,sharedPreferences);
+        if(checkedAudioUri==null)
+            checkedAudioUri=new ArrayList<>();
     }
 
 
@@ -64,7 +74,12 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
         holder.getSongNameTextView().setText(mMediaStore.getString(songNameIndex));
         holder.getSongLengthTextView().setText(String.valueOf(mMediaStore.getInt(songLengthIndex)));
         holder.getSongImageView().setImageResource(R.drawable.songimageicon);
-
+        for(int i=0;i<checkedAudioUri.size();i++){
+            if(checkedAudioUri.get(i).toString().equals(uri.toString())){
+                checkBox1.setChecked(true);
+                break;
+            }
+        }
         checkBox1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,18 +87,22 @@ public class SendSongsRecyclerView extends RecyclerView.Adapter<SendSongsRecycle
                 if(!checkBox1.isChecked()) {
                     checkBox1.setChecked(false);
                     for (int i = 0; i < audioUri.size(); i++) {
-                        if (audioUri.get(i).toString().equals(uri.toString())) {
+                        if (audioUri.get(i).toString().trim().equals(uri.toString().trim())) {
                             audioUri.remove(i);
                             break;
                         }
                     }
-                    Toast.makeText(mActivity, "" + audioUri.size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "" + audioUri.size()+" "+uri, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     checkBox1.setChecked(true);
                     audioUri.add(uri);
-                    Toast.makeText(mActivity, ""+audioUri.size(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, ""+new Helper(mActivity).getNameFromURI(uri), Toast.LENGTH_SHORT).show();
                 }
+                ArrayList<String> arrayList=new ArrayList<>();
+                for(int i=0;i<audioUri.size();i++)
+                    arrayList.add(audioUri.get(i).toString());
+                SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.MUSIC,sharedPreferences);
             }
         });
 

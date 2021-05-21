@@ -1,6 +1,8 @@
 package com.example.socketstream.recyclerView;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -10,11 +12,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.socketstream.R;
+import com.example.socketstream.SendFilesViewPager;
+import com.example.socketstream.connect.Helper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,9 +27,20 @@ import java.util.ArrayList;
 public class SendFilesRecyclerView extends RecyclerView.Adapter<SendFilesRecyclerView.ViewHolder> {
     Cursor mMediaStoreCursor=null;
     ArrayList<File> filesUri;
-
-    public SendFilesRecyclerView(ArrayList<File> uri){
+    ArrayList<Uri> seleFileUri,checkedFileUri;
+    Activity mActivity;
+    SharedPreferences sharedPreferences;
+    public SendFilesRecyclerView(ArrayList<File> uri, Activity mActivity){
         filesUri=new ArrayList<>(uri);
+        seleFileUri=new ArrayList<>();
+        this.mActivity=mActivity;
+        sharedPreferences=mActivity.getSharedPreferences(SendFilesViewPager.SELECT_ITEMS,Context.MODE_PRIVATE);
+        seleFileUri=SendFilesViewPager.getArrayList(SendFilesViewPager.FILES,sharedPreferences);
+        if(seleFileUri==null)
+            seleFileUri=new ArrayList<>();
+        checkedFileUri=SendFilesViewPager.getArrayList(SendFilesViewPager.FILES,sharedPreferences);
+        if(checkedFileUri==null)
+            checkedFileUri=new ArrayList<>();
     }
 
     @NonNull
@@ -36,11 +52,22 @@ public class SendFilesRecyclerView extends RecyclerView.Adapter<SendFilesRecycle
         View view=(View)layoutInflater.inflate(layoutInflate,parent,false);
         return new SendFilesRecyclerView.ViewHolder(view);
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         File file=filesUri.get(position);
         holder.getFileNameTextView().setText(file.getName());
+        final Uri uri=Uri.fromFile(file);
+        //final Uri uri=Uri.fromFile(file);
         if(file.getName().endsWith(".docx")){
             holder.getImageView().setImageResource(R.drawable.docx);
         }else if(file.getName().endsWith(".pdf")){
@@ -52,6 +79,65 @@ public class SendFilesRecyclerView extends RecyclerView.Adapter<SendFilesRecycle
         }else if(file.getName().endsWith(".zip")){
             holder.getImageView().setImageResource(R.drawable.zip);
         }
+        final CheckBox checkBox1=holder.getCheckBox();
+        for(int i=0;i<checkedFileUri.size();i++){
+            if(checkedFileUri.get(i).toString().equals(uri.toString())){
+                checkBox1.setChecked(true);
+                break;
+            }
+        }
+        holder.getImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // CheckBox checkBox=(CheckBox)view.findViewById(R.id.send_image_recycler_check_box);
+                //TextView text=(TextView)view.findViewById(R.id.send_text_image_fragment_view);
+                if(checkBox1.isChecked()){
+                    checkBox1.setChecked(false);
+                    for(int i=0;i<seleFileUri.size();i++){
+                        if(seleFileUri.get(i).toString().equals(uri.toString())){
+                            seleFileUri.remove(i);
+                            break;
+                        }
+                    }
+                    Toast.makeText(mActivity, ""+seleFileUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    checkBox1.setChecked(true);
+                    seleFileUri.add(uri);
+                    Toast.makeText(mActivity, ""+seleFileUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                ArrayList<String> arrayList=new ArrayList<>();
+                for(int i=0;i<seleFileUri.size();i++)
+                    arrayList.add(seleFileUri.get(i).toString());
+                SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.FILES,sharedPreferences);
+            }
+        });
+        checkBox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TextView text=(TextView)view.findViewById(R.id.send_text_image_fragment_view);
+                if(!checkBox1.isChecked()) {
+                    checkBox1.setChecked(false);
+                    for (int i = 0; i < seleFileUri.size(); i++) {
+                        if (seleFileUri.get(i).toString().equals(uri.toString())) {
+                            seleFileUri.remove(i);
+                            break;
+                        }
+                    }
+                    Toast.makeText(mActivity, "" + seleFileUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    checkBox1.setChecked(true);
+                    seleFileUri.add(uri);
+                    Toast.makeText(mActivity, uri+" "+"g "+new Helper(mActivity).getNameFromURI(uri), Toast.LENGTH_SHORT).show();
+                }
+                ArrayList<String> arrayList=new ArrayList<>();
+                for(int i=0;i<seleFileUri.size();i++)
+                    arrayList.add(seleFileUri.get(i).toString());
+                SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.FILES,sharedPreferences);
+            }
+        });
+
        // holder.getImageView().setImageURI(Uri.parse(file.getAbsolutePath()));
     }
 
@@ -108,5 +194,8 @@ public class SendFilesRecyclerView extends RecyclerView.Adapter<SendFilesRecycle
         if (oldCursor != null) {
             oldCursor.close();
         }
+    }
+    public ArrayList<Uri> getArrayListUri(){
+        return seleFileUri;
     }
 }

@@ -2,8 +2,12 @@ package com.example.socketstream.recyclerView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.socketstream.R;
+import com.example.socketstream.SendAppsStorage;
+import com.example.socketstream.SendFilesViewPager;
+import com.example.socketstream.connect.Helper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +33,20 @@ public class SendAppRecyclerView extends RecyclerView.Adapter<SendAppRecyclerVie
 
     Cursor mMediaStoreCursor=null;
     Activity mActivity;
-    List<PackageInfo> installedApps;
-
-    public SendAppRecyclerView(Activity mActivity, List<PackageInfo> list){
+    List<ApplicationInfo> installedApps;
+    ArrayList<Uri> appUri,checkedAppUri;
+    SharedPreferences sharedPreferences;
+    public SendAppRecyclerView(Activity mActivity, List<ApplicationInfo> list){
         this.mActivity=mActivity;
         installedApps=new ArrayList<>(list);
+        appUri=new ArrayList<>();
+        sharedPreferences=mActivity.getSharedPreferences(SendFilesViewPager.SELECT_ITEMS,Context.MODE_PRIVATE);
+        appUri=SendFilesViewPager.getArrayList(SendFilesViewPager.APPS,sharedPreferences);
+        if(appUri==null)
+            appUri=new ArrayList<>();
+        checkedAppUri=SendFilesViewPager.getArrayList(SendFilesViewPager.APPS,sharedPreferences);
+        if(checkedAppUri==null)
+            checkedAppUri=new ArrayList<>();
     }
 
     @NonNull
@@ -43,14 +61,87 @@ public class SendAppRecyclerView extends RecyclerView.Adapter<SendAppRecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull SendAppRecyclerView.ViewHolder holder, int position) {
-        PackageInfo object=installedApps.get(position);
-        String appName=object.applicationInfo.loadLabel(mActivity.getPackageManager()).toString();
-        String version=object.versionName;
-        holder.getAppNameTextView().setText(appName);
-        holder.getAppSizeTextView().setText(version);
-        holder.getImageView().setImageDrawable(object.applicationInfo.loadIcon(mActivity.getPackageManager()));
+        //PackageInfo object=installedApps.get(position);
+        ApplicationInfo pkg= installedApps.get(position);
+
+        holder.getImageView().setImageDrawable(pkg.loadIcon(SendAppsStorage.packageManager));
+        holder.getAppNameTextView().setText(pkg.loadLabel(SendAppsStorage.packageManager));
+       // holder.getAppSizeTextView().setText(pkg.);
 
 
+        final Uri uri;
+        //Toast.makeText(this, app.sourceDir, Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.N) {
+            //Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            uri = Uri.parse(pkg.sourceDir);
+            //uriList.add(uri.toString());
+           // Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+        } else{
+           // Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+            uri = Uri.fromFile(new File(pkg.sourceDir));
+            //uriList.add(uri.toString());
+           // Toast.makeText(this, uri.toString(), Toast.LENGTH_SHORT).show();
+        }
+        final CheckBox checkBox1=holder.getCheckBox();
+        for(int i=0;i<checkedAppUri.size();i++){
+            if(checkedAppUri.get(i).toString().equals(uri.toString())){
+                checkBox1.setChecked(true);
+                break;
+            }
+        }
+        holder.getImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // CheckBox checkBox=(CheckBox)view.findViewById(R.id.send_image_recycler_check_box);
+                //TextView text=(TextView)view.findViewById(R.id.send_text_image_fragment_view);
+                if(checkBox1.isChecked()){
+                    checkBox1.setChecked(false);
+                    for(int i=0;i<appUri.size();i++){
+                        if(appUri.get(i).toString().equals(uri.toString())){
+                            appUri.remove(i);
+                            break;
+                        }
+                    }
+                    Toast.makeText(mActivity, ""+appUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    checkBox1.setChecked(true);
+                    appUri.add(uri);
+                    Toast.makeText(mActivity, ""+uri, Toast.LENGTH_SHORT).show();
+                }
+                ArrayList<String> arrayList=new ArrayList<>();
+                for(int i=0;i<appUri.size();i++)
+                    arrayList.add(appUri.get(i).toString());
+                SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.APPS,sharedPreferences);
+            }
+        });
+
+        checkBox1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TextView text=(TextView)view.findViewById(R.id.send_text_image_fragment_view);
+                if(!checkBox1.isChecked()) {
+                    checkBox1.setChecked(false);
+                    for (int i = 0; i < appUri.size(); i++) {
+                        if (appUri.get(i).toString().equals(uri.toString())) {
+                            appUri.remove(i);
+                            break;
+                        }
+                    }
+                    Toast.makeText(mActivity, "" + appUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    checkBox1.setChecked(true);
+                    appUri.add(uri);
+                    Toast.makeText(mActivity, uri+" and "+new Helper(mActivity).getNameFromURI(uri), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(mActivity, ""+appUri.size(), Toast.LENGTH_SHORT).show();
+                }
+                ArrayList<String> arrayList=new ArrayList<>();
+                for(int i=0;i<appUri.size();i++)
+                    arrayList.add(appUri.get(i).toString());
+                SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.APPS,sharedPreferences);
+            }
+        });
     }
 
     @Override
@@ -117,6 +208,9 @@ public class SendAppRecyclerView extends RecyclerView.Adapter<SendAppRecyclerVie
         if (oldCursor != null) {
             oldCursor.close();
         }
+    }
+    public ArrayList<Uri> getArrayListUri(){
+        return appUri;
     }
 
 }

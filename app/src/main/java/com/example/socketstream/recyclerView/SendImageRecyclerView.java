@@ -3,6 +3,7 @@ package com.example.socketstream.recyclerView;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.socketstream.R;
+import com.example.socketstream.SendFilesViewPager;
+import com.example.socketstream.connect.Helper;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -30,8 +33,8 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
 
     Cursor mMediaStoreCursor=null;
 
-    static ArrayList<Uri> imageUri;
-
+    static ArrayList<Uri> imageUri,checkedImageUri;
+    SharedPreferences sharedPreferences;
 
 
     Activity mActivity;
@@ -40,6 +43,13 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
     public SendImageRecyclerView(Activity mActivity){
         this.mActivity=mActivity;
         imageUri=new ArrayList<>();
+        sharedPreferences=mActivity.getSharedPreferences(SendFilesViewPager.SELECT_ITEMS,Context.MODE_PRIVATE);
+        imageUri=SendFilesViewPager.getArrayList(SendFilesViewPager.IMAGES,sharedPreferences);
+        if(imageUri==null)
+            imageUri=new ArrayList<>();
+        checkedImageUri=SendFilesViewPager.getArrayList(SendFilesViewPager.IMAGES,sharedPreferences);
+        if(checkedImageUri==null)
+            checkedImageUri=new ArrayList<>();
     }
 
     @NonNull
@@ -59,13 +69,18 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Bitmap bitmap = getBitmapFromMediaStore(position);
         final CheckBox checkBox1=holder.getCheckBox();
-
         //in some cases, it will prevent unwanted situations
         //checkBox1.setOnCheckedChangeListener(null);
         mMediaStoreCursor.moveToPosition(position);
         int idIndex = mMediaStoreCursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
         int id=mMediaStoreCursor.getInt(idIndex);
         final Uri uri= ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id);
+        for(int i=0;i<checkedImageUri.size();i++){
+            if(checkedImageUri.get(i).toString().equals(uri.toString())){
+                checkBox1.setChecked(true);
+                break;
+            }
+        }
         if (bitmap != null) {
             holder.getImageView().setImageBitmap(bitmap);
             holder.getImageView().setOnClickListener(new View.OnClickListener() {
@@ -88,6 +103,11 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
                         imageUri.add(uri);
                         Toast.makeText(mActivity, ""+imageUri.size(), Toast.LENGTH_SHORT).show();
                     }
+                    ArrayList<String> arrayList=new ArrayList<>();
+                    for(int i=0;i<imageUri.size();i++)
+                        arrayList.add(imageUri.get(i).toString());
+                    SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.IMAGES,sharedPreferences);
+
                 }
             });
 
@@ -108,9 +128,14 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
                     else{
                         checkBox1.setChecked(true);
                         imageUri.add(uri);
-                        Toast.makeText(mActivity, ""+imageUri.size(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity, ""+new Helper(mActivity).getNameFromURI(uri), Toast.LENGTH_SHORT).show();
                     }
+                    ArrayList<String> arrayList=new ArrayList<>();
+                    for(int i=0;i<imageUri.size();i++)
+                        arrayList.add(imageUri.get(i).toString());
+                    SendFilesViewPager.saveArrayList(arrayList,SendFilesViewPager.IMAGES,sharedPreferences);
                 }
+
             });
         }
 
@@ -129,7 +154,7 @@ public class SendImageRecyclerView extends RecyclerView.Adapter<SendImageRecycle
     //return the number of images
     @Override
     public int getItemCount() {
-        return mMediaStoreCursor==null?0 : mMediaStoreCursor.getCount();
+        return mMediaStoreCursor==null? 0 : mMediaStoreCursor.getCount();
     }
 
 
