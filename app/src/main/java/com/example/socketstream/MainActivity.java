@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView transferFileHistory;
     Button sendButton,receiveButton,sendTextInputStream;
-
+    public static ProgressDialog progressDialog1=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         sendTextInputStream=(Button)findViewById(R.id.text_stream);
     }
 
+
+
     /*
     function to listen click events
      */
@@ -70,6 +74,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this,SendFilesViewPager.class);
+                progressDialog1 = ProgressDialog.show(MainActivity.this, "Loading...", "Press back to cancel", true,
+                        true, new DialogInterface.OnCancelListener() {
+
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+
+                            }
+                        });
                 startActivity(intent);
             }
         });
