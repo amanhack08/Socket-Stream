@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4B9B19</color>
-    <color name="colorPrimaryDark">#4B9B19</color>
-    <color name="colorAccent">#4B9B19</color>
-    <color name="colorEveryWhereInApp">#4B9B19</color>
+    <color name="colorPrimary">#44c7a8</color>
+    <color name="colorPrimaryDark">#44c7a8</color>
+    <color name="colorAccent">#44c7a8</color>
+    <color name="colorEveryWhereInApp">#44c7a8</color>
+    <color name="textColor">#FFFFFF</color>
 </resources>

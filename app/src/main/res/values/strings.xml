@@ -3,6 +3,8 @@
     <string name="transfer_history">Transfer History</string>
     <string name="send_button_fab">SEND</string>
     <string name="receive_butto_fab">RECEIVE</string>
+    <string name="disconnect_peer_button">Disconnect</string>
+    <string name="connect_peer_button">Connect</string>
     <string name="sendPhotoPageName">Photos</string>
     <string name="sendVideosPageName">Videos</string>
     <string name="sendAppsPageName">Apps</string>
@@ -13,7 +15,14 @@
     <string name="Hotspot">Turn Off Hotspot</string>
     <string name="wifi">Turn On Wifi</string>
     <string name="textMessageLable">Text</string>
+    <string name="client_text">This device will act as a client. Click on Send button..</string>
+    <string name="group_owner_text">"Am I the Group Owner? "</string>
+    <string name="p2p_off_warning">Enable WiFi from action bar above or from system settings</string>
     <string name="textHistory">Text Message</string>
     <string name="receiveImagesButton">Receive Images</string>
     <string name="receive_images_activity_label">Images</string>
+    <string name="download_path">/storage/emulated/0/SocketStream/</string>
+    <string name="empty"/>
+    <string name="empty_message">Make sure WiFi is turned on and then click on discover button on Action Bar</string>
+    <string name="discover">Discover</string>
 </resources>
