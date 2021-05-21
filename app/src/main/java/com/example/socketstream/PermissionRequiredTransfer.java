@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.socketstream.connect.DevicesActivity;
 import com.example.socketstream.sendfiles.SendImages;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
     WifiP2pManager wifiP2pManager;
     WifiP2pManager.Channel mChannel;
     WifiManager wifiManager;
-    SocketStreamBroadcastReceiver socketStreamBroadcastReceiver;
+    //SocketStreamBroadcastReceiver socketStreamBroadcastReceiver;
     IntentFilter intentFilter;
     String textMessage=null;
     String data=null;
@@ -50,25 +51,25 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
         else if(data.equals("3")){
             textMessage=intent.getStringExtra("message");
         }
-        socketStreamBroadcastReceiver=new SocketStreamBroadcastReceiver(  PermissionRequiredTransfer.this,mChannel,wifiP2pManager);
-        intentFilter=new IntentFilter();
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+//        socketStreamBroadcastReceiver=new SocketStreamBroadcastReceiver(  PermissionRequiredTransfer.this,mChannel,wifiP2pManager);
+//        intentFilter=new IntentFilter();
+//        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+//        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+//        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+//        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         onClickButtonEventListener();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(socketStreamBroadcastReceiver,intentFilter);
+        //registerReceiver(socketStreamBroadcastReceiver,intentFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(socketStreamBroadcastReceiver);
+        //unregisterReceiver(socketStreamBroadcastReceiver);
     }
 
     public void initializeAllButtons(){
@@ -162,20 +163,25 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(data.equals("3")){
-                    Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
-                    intent.putExtra("message",textMessage);
-                    intent.setData(Uri.parse("3"));
-                    startActivity(intent);
+//                    Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
+//                    intent.putExtra("message",textMessage);
+//                    intent.setData(Uri.parse("3"));
+//                    startActivity(intent);
                 }
                 else if(data.equals("9")){
-                    Intent intent1=new Intent(PermissionRequiredTransfer.this, SendImages.class);
+                    DevicesActivity.isClient=true;
+                    Intent intent1=new Intent(PermissionRequiredTransfer.this, DevicesActivity.class);
                     ArrayList<Uri> myList = (ArrayList<Uri>) intent.getSerializableExtra("mylist");
                     intent1.putExtra("mylist",myList);
+                    intent1.putExtra("check","3");
                     intent1.setData(Uri.parse("0"));
                     startActivity(intent1);
                 }
                 else{
-                    Intent intent=new Intent(PermissionRequiredTransfer.this,DiscoverPeers.class);
+                    DevicesActivity.isClient = false;
+                    Intent intent=new Intent(PermissionRequiredTransfer.this,DevicesActivity.class);
+                    intent.putExtra("mylist","");
+                    intent.putExtra("check","2");
                     startActivity(intent);
                 }
 
@@ -186,6 +192,7 @@ public class PermissionRequiredTransfer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent1=new Intent(PermissionRequiredTransfer.this,SendImages.class);
+                intent1.putExtra("mylist","");
                 startActivity(intent1);
             }
         });

@@ -2,6 +2,7 @@ package com.example.socketstream;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,18 +30,20 @@ import java.util.List;
 public class SendAppsStorage extends Fragment  {
 
     View v;
-    List<PackageInfo> installedApps;
-    List<PackageInfo> getApps;
-
+    //List<PackageInfo> installedApps;
+    //List<PackageInfo> getApps;
+    List<ApplicationInfo> getApps;
     SendAppRecyclerView sendAppRecyclerView;
+    public static PackageManager packageManager = null;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         v=inflater.inflate(R.layout.send_apps_storage,container,false);
 
-        installedApps();
-
+        //installedApps();
+        packageManager=getActivity().getPackageManager();
+        getApps = checkForLaunchIntent(packageManager.getInstalledApplications(PackageManager.GET_META_DATA));
         sendAppRecyclerView=new SendAppRecyclerView(getActivity(),getApps);
 
 
@@ -54,15 +57,34 @@ public class SendAppsStorage extends Fragment  {
         return v;
     }
 
-    public void installedApps(){
-        getApps=new ArrayList<>();
-        installedApps=getActivity().getPackageManager().getInstalledPackages(0);
-        for(int i=0;i<installedApps.size();i++){
-            PackageInfo packageInfo=installedApps.get(i);
-            if((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM)==0){
-                getApps.add(packageInfo);
+    private List<ApplicationInfo> checkForLaunchIntent(List<ApplicationInfo> list) {
+        ArrayList<ApplicationInfo> applist = new ArrayList<ApplicationInfo>();
+
+        for (ApplicationInfo info : list) {
+
+            try {
+
+                if (packageManager.getLaunchIntentForPackage(info.packageName) != null) {
+                    applist.add(info);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-
+        return applist;
     }
+
+
+//    public void installedApps(){
+//        getApps=new ArrayList<>();
+//        installedApps=getActivity().getPackageManager().getInstalledPackages(0);
+//        for(int i=0;i<installedApps.size();i++){
+//            PackageInfo packageInfo=installedApps.get(i);
+//            if((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM)==0){
+//                getApps.add(packageInfo);
+//            }
+//        }
+//
+//    }
 }

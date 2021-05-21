@@ -56,16 +56,16 @@ public class SendPhotosGallery extends Fragment implements LoaderManager.LoaderC
         sendButton=(Button)v.findViewById(R.id.send_button_image_fragment_view);
 
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendArrayListImages=SendImageRecyclerView.getArrayListUri();
-                Intent intent=new Intent( getActivity(),PermissionRequiredTransfer.class);
-                intent.setData(Uri.parse("9"));
-                intent.putExtra("mylist",sendArrayListImages);
-                startActivity(intent);
-            }
-        });
+//        sendButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                sendArrayListImages=SendImageRecyclerView.getArrayListUri();
+//                Intent intent=new Intent( getActivity(),PermissionRequiredTransfer.class);
+//                intent.setData(Uri.parse("9"));
+//                intent.putExtra("mylist",sendArrayListImages);
+//                startActivity(intent);
+//            }
+//        });
         getLoaderManager().initLoader(0, null, this);
         recyclerView=(RecyclerView)v.findViewById(R.id.send_image_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(),3));

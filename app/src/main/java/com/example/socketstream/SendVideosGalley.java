@@ -81,11 +81,11 @@ public class SendVideosGalley extends Fragment implements LoaderManager.LoaderCa
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-        return new CursorLoader(getActivity().getApplicationContext(),MediaStore.Files.getContentUri("external")
+
+
+        return new CursorLoader(getActivity().getApplicationContext(),MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         ,null
-        ,selection
+        ,null
         ,null
         ,null);
     }

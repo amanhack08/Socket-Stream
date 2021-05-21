@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class SendFilesStorage extends Fragment {
     View v;
-    int count=0;
+   // int count=0;
     ArrayList<File> filesUri;
 
     @Nullable
@@ -35,15 +35,15 @@ public class SendFilesStorage extends Fragment {
         filesUri=new ArrayList<>();
         getFilesFromStorage(Environment.getExternalStorageDirectory());
 
-        Toast.makeText(getActivity(), ""+count, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), ""+count, Toast.LENGTH_SHORT).show();
 
-        SendFilesRecyclerView sendFilesRecyclerView=new SendFilesRecyclerView(filesUri);
+        SendFilesRecyclerView sendFilesRecyclerView=new SendFilesRecyclerView(filesUri,getActivity());
         RecyclerView recyclerView=(RecyclerView)v.findViewById(R.id.send_file_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity().getApplicationContext(),5));
         recyclerView.setAdapter(sendFilesRecyclerView);
-
         return v;
     }
+
 
     public void getFilesFromStorage(File dir){
 
@@ -54,6 +54,7 @@ public class SendFilesStorage extends Fragment {
         String odtPattern=".odt";
 
         File listFile[] = dir.listFiles();
+        
 
         if (listFile != null) {
             for (int i = 0; i < listFile.length; i++) {
@@ -66,6 +67,7 @@ public class SendFilesStorage extends Fragment {
                             listFile[i].getName().endsWith(zipPattern)||
                             listFile[i].getName().endsWith(pptPattern)
                     ||listFile[i].getName().endsWith(odtPattern)){
+
                        filesUri.add(listFile[i]);
                     }
                 }
@@ -73,4 +75,5 @@ public class SendFilesStorage extends Fragment {
         }
 
     }
+
 }

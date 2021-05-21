@@ -39,19 +39,20 @@ public class SendFragmentPageAdapter extends FragmentPagerAdapter {
 
         switch(position){
             case 0:
-                return "Apps";
+                return "App";
             case 1:
-                return "Files";
+                return "File";
             case 2:
-                return "Videos";
+                return "Video";
             case 3:
-                return "Songs";
+                return "Song";
             case 4:
-                return "Photos";
+                return "Photo";
             default:
                 return null;
         }
     }
+
 
     @Override
     public int getCount() {
