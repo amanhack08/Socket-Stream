@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- layout for DevicesListFragment-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.cnnfe.liteshare.Connect_devices.DevicesListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    app:layoutManager="LinearLayoutManager"
+    tools:context=".connect.DevicesListFragment"
+    android:orientation="vertical"
+    android:paddingTop="3dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@color/colorEveryWhereInApp"
+        android:gravity="center_vertical"
+        android:text="MY DEVICE"
+        android:paddingLeft="6dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:gravity="center_vertical"
+        android:background="@color/colorEveryWhereInApp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:background="@color/colorEveryWhereInApp"
+        android:padding="3dip">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="61dp"
+            android:layout_height="64dp"
+            android:layout_marginRight="2dp"
+            android:src="@drawable/machine" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/my_name"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/my_status"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:gravity="center_vertical"
+        android:background="@color/colorEveryWhereInApp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@color/colorEveryWhereInApp"
+        android:gravity="center_vertical"
+        android:text="MY PEERS"
+        android:paddingLeft="6dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:gravity="center_vertical"
+        android:background="@color/colorEveryWhereInApp"/>
+
+    <!-- list of peers -->
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_weight="1"
+        android:drawSelectorOnTop="false"
+        android:background="@color/colorEveryWhereInApp"/>
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="418dp"
+        android:layout_height="409dp"
+        android:layout_gravity="center"
+        android:background="@color/colorEveryWhereInApp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:text="@string/empty_message"
+        tools:ignore="DuplicateIds" />
+</LinearLayout>
