@@ -1,4 +1,6 @@
 # Socket-Stream
-An application uses for transfer files from one phone to another using wifi Direct Technology
-This app is capable of sending images and text message 
-API used : WifiP2p , MediaStore 
+Socket Stream is a File Sharing Android App made in Java
+that aims at sharing the files like videos, images ,media
+files from one user to another user using wifi . 
+Socket Stream uses WifiP2p Technology , you have to just
+on your location and wifi to share files.
